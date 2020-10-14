@@ -16,7 +16,7 @@ class Ellipse(object):
   """
   object Cylinder scatterer
   """
-  def __init__(self, N=70, a=2.1, b=1.7, c_aux=0.67, EP=21, E_0= 1, psi=0, k=1, c_obs=1):
+  def __init__(self, N=55, a=2.4*3.14, b=1.94*3.14, c_aux=0.01, EP=15, E_0= 1, psi=0, k=1, c_obs=1):
     """
     # Inputs:
 	# N: number of auxiliary sources and collocation points
@@ -140,7 +140,7 @@ class Ellipse(object):
     if verbose:
       print(error)
 
-    return(max(error))
+    return(np.mean(error))
 
     #plt.plot(2*math.pi*np.arange(0,N, 1/EP)/N, error, label = "ERROR")
     # plt.suptitle("ERROR")

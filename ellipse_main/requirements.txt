@@ -1,0 +1,9 @@
+## shapes 5 shapes (cylinder, ellipse, triangle, square, plane)
+## cylinder, ellispe, square, triangle (1D)
+## plane (2D)
+## 3shapes (>2D)
+
+
+##Cylinder :  change to np.mean(error) run again (##talk to christos##) | for the hof value (of 10*math.pi) calculate Ez functions  |
+##Ellipse  : pairs (a,b not given yet) | for the hof value calculate Ez functions (##talk to christos##) |
+##

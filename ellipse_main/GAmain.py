@@ -44,7 +44,7 @@ if __name__ == '__main__':
 	  start = time.time()
 	  log_arr = []
 	  #THREE STEP TOTAL SCALING MUTATION
-	  population = 20
+	  population = 10
 	  m, l = population//2 , population
 	  cxpb ,mutpb = 0.15, 0.85
 	  #ngen = ngen + 1  #that will be tripled
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 	  
 	  ### Specify the mutations. GA will be applied for every $N: $len(gauss_sigma) times. Every time: $population evolves $ngen
 	  #gauss_sigma=[diff/10,diff/100,diff/500,diff/1000,diff/5000,diff/10000]
-	  gauss_sigma=[diff/10,diff/100,diff/500]
+	  gauss_sigma=[diff/100,diff/1000,diff/5000,diff/10000]
 	  		  
 
 	  pop = toolbox.population(population)

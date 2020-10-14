@@ -8,7 +8,7 @@ import numpy as np
 ###Returns random initial values for r,N. This will be calculated for each individual at the beginning
 ### PROBLEM PARAMETERS###
 
-r_lower, r_upper =-20, 20
+r_lower, r_upper =0,1
 
 
 #Examine whether values are out of bounds
