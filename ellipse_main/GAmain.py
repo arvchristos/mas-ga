@@ -16,44 +16,30 @@ import matplotlib.pyplot as plt
 
 #warnings.filterwarnings("ignore")
 if __name__ == '__main__':
-	"""
-	### PROBLEM PARAMETERS###
-	divisor = 2
-	r_cylinder = math.pi / divisor
-	r_s = (3/2)* r_cylinder
-	N = 50
-	r_critical = math.pow(r_cylinder,2)/r_s
-	r_lower, r_upper, N_lower, N_upper = r_critical, r_cylinder, 1, 50
-	numVariables = 1
-	"""
+	
 	toolbox  = create_toolbox(r_lower, r_upper)
-
+	pair_arr=[(0.5, 0.2), (2.1, 1.7), (math.pi, 0.88*math.pi), (0.95*math.pi, 0.4*math.pi), (2.4*math.pi, 1.94*math.pi), (6*math.pi, 1.5*math.pi)]
+	pair = 0		
 	final_data = []
-	ngen = 4
-	for N in range(25,26,4):
+	ngen = 3
+	for _ in range(0,1,1):
 	  def FuncEvaluation(indiv):
 	  ##r_aux,N,r_c,r_obs,r_s,EP,k
 	    Calc = calculate(indiv[0])
 	    return (Calc,) 
 	  #init_values
 	  goal, error, iterations  = 0.0, 1e-7, 1
-	  ngen_arr, time_arr, hof_arr, min_val_arr, first_best_arr = [],[],[],[],[]
-	  logs = []
-	  ###Total run
-	  #for j in range(iterations):
-	  start = time.time()
-	  log_arr = []
-	  #THREE STEP TOTAL SCALING MUTATION
-	  population = 10
-	  m, l = population//2 , population
-	  cxpb ,mutpb = 0.15, 0.85
-	  #ngen = ngen + 1  #that will be tripled
-	  diff = r_upper - r_lower
-	  print(diff,"diff")
+	  ngen_arr, time_arr, hof_arr, min_val_arr, first_best_arr = [], [], [], [], []
+	  logs, log_arr = [], []
 	  
+	  start = time.time()
+	  population = 30
+	  m, l = population//2 , population
+	  cxpb ,mutpb = 0.2, 0.8
+	  diff = r_upper - r_lower
 	  ### Specify the mutations. GA will be applied for every $N: $len(gauss_sigma) times. Every time: $population evolves $ngen
 	  #gauss_sigma=[diff/10,diff/100,diff/500,diff/1000,diff/5000,diff/10000]
-	  gauss_sigma=[diff/100,diff/1000,diff/5000,diff/10000]
+	  gauss_sigma=[diff/100,diff/400,diff/800,diff/1600]
 	  		  
 
 	  pop = toolbox.population(population)
@@ -64,6 +50,7 @@ if __name__ == '__main__':
 	    stats = tools.Statistics(lambda ind: ind.fitness.values)
 	    stats.register("min", np.min)
 	    pop,logbook = algorithms.eaMuPlusLambda(pop, toolbox,m,l, cxpb=cxpb, mutpb=mutpb, ngen=ngen, stats=stats, halloffame=hof,verbose=True)
+	    ###append data###
 	    log_arr.append(logbook)
 	    ngen_arr.append(ngen*(i+1))
 	    time_arr.append(time.time()-start)
@@ -91,7 +78,7 @@ if __name__ == '__main__':
 	  
 	  print(table)
 	  print("-------------------------------")
-	  print("N = ",N)
+	  
 
 
 	### PLOT ###  
@@ -104,23 +91,19 @@ if __name__ == '__main__':
 	#a =  [(a[item],item) for item in range(len(a)) ]
 	print("plot is omitted for now")
 	# plot, then save plot, save data in txt file 
-	"""
+	
 	import matplotlib.pyplot as plt
 	plt.plot(champs)
 	plt.ylabel('max error')
 	plt.xlabel('number of generations')
 	plt.title('N = %i ' % N)
-	plt.savefig('cylpi%s.png' % str(divisor), dpi=400, bbox_inches='tight')
+	plt.savefig('ellispe%s.png' % str(pair), dpi=400, bbox_inches='tight')
 	plt.show()
 
-	with open('cylpi%s.txt' % str(divisor), 'w') as f:
-	  f.write("r_cylinder=%s" %str(r_cylinder)+'\n')
-	  f.write("N=%s" %N+'\n')
+	with open('ellipse%s.txt' % str(pair), 'w') as f:
+	  f.write("dimensions a, b =%s" %str(pair_arr[pair])+'\n')
 	  f.write("time elasped = %s" %str(datetime.timedelta(seconds=floor(time_arr[len(gauss_sigma)-1])))+'\n')
 	  f.write("best r_aux value = %s" %str(hof_arr[len(gauss_sigma)-1][0]) + '\n')
 	  f.write('max error values:\n')
 	  for item in champs:
 	    f.write(str(item)+',')
-	  
-	#15,25....
-	"""
