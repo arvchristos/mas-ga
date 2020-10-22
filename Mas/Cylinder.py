@@ -24,7 +24,7 @@ class Cylinder(object):
     self.r_obs = r_obs
     self.phi_s = phi_s
 
-  def mas(self, verbose=False, both_flag=False ):
+  def mas(self, verbose=False, both_flag=False):
     """
     Execute MAS algorithm
     """
@@ -183,7 +183,7 @@ class Cylinder(object):
 
     if both_flag:
       return(np.mean(error),max(error))
-    return max(error)
+    return(max(error))
 
 
   # d_p[i] = sqrt(A-B*cos(C*i))

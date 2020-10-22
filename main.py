@@ -1,5 +1,5 @@
-from Mas import Ellipse
+from Mas import SmoothTriangle
 
-schema = Ellipse.Ellipse(N=100)
+schema = SmoothTriangle.SmoothTriangle(N=20)
 
-print(schema.mas(verbose=False))
+print(schema.mas(verbose=False, both_flag=False))

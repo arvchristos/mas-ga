@@ -10,7 +10,7 @@ import itertools
 import multiprocessing as mp
 import cmath
 import mpmath
-
+import psutil
 
 
 class SmoothTriangle(object):
@@ -30,8 +30,8 @@ class SmoothTriangle(object):
     self.k = k
     self.c_obs = c_obs
 
-  def mas(self, verbose=False):
-    n_proc = mp.cpu_count()
+  def mas(self, verbose=False, both_flag=False):
+    n_proc = psutil.cpu_count(logical=False)
 
     self.w = self.k/math.sqrt(constant.E*constant.M)
     self.lamdaNum = 2*math.pi/self.k
@@ -55,12 +55,9 @@ class SmoothTriangle(object):
 
     self.sol = np.array(pool.map(self.sol_worker, np.arange(0, self.N, 1/self.EP)))
 
-    pool = mp.Pool(processes=n_proc)
     self.x_act = np.array(pool.map(self.x_act_worker, np.arange(0, self.N*self.EP, 1)))
 
-    pool = mp.Pool(processes=n_proc)
     self.y_act = np.array(pool.map(self.y_act_worker, np.arange(0, self.N*self.EP, 1)))
-
 
     # Collocation points
     self.x_obs = self.x_act*self.c_obs
@@ -81,13 +78,10 @@ class SmoothTriangle(object):
     # Auxiliary currents
 
     # Determination of equation 6
-
-    pool = mp.Pool(processes=n_proc)
     B = np.array(pool.map(self.B_worker, np.arange(0, self.N, 1)))
 
     paramlist = list(itertools.product(range(self.N),range(self.N)))
 
-    pool = mp.Pool(processes=n_proc)
     res = np.array(pool.map(self.A_worker, paramlist))
     A = res.reshape(self.N, self.N)
 
@@ -98,7 +92,6 @@ class SmoothTriangle(object):
 
     self.I_aux = np.linalg.solve(A, B)
 
-    pool = mp.Pool(processes=n_proc)
     Ez_inc = np.array(pool.map(self.Ez_inc_worker, np.arange(0, self.N*self.EP, 1)))
 
     # b_pl : distance between auxiliary filament l and collocation point p
@@ -107,12 +100,9 @@ class SmoothTriangle(object):
     paramlist = list(itertools.product(np.arange(0,self.N*self.EP, 1),range(self.N)))
 
     # A_bessel : left hand side of eq22
-
-    pool = mp.Pool(processes=n_proc)
     res = np.array(pool.map(self.Ez_scat_deserialized_worker, paramlist))
     self.Ez_scat_deserialized = res.reshape(self.N*self.EP, self.N)
 
-    pool = mp.Pool(processes=n_proc)
     Ez_scat = np.array(pool.map(self.Ez_scat_worker, range(self.N*self.EP)))
 
     Ez_MAS = Ez_inc+Ez_scat
@@ -122,6 +112,11 @@ class SmoothTriangle(object):
     if verbose:
       print(error)
 
+    pool.close()
+    pool.join()
+
+    if both_flag:
+      return(np.mean(error),max(error))
     return(max(error))
 
     #plt.plot(2*math.pi*np.arange(0,N, 1/EP)/N, error, label = "ERROR")

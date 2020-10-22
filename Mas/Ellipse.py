@@ -31,8 +31,8 @@ class Ellipse(object):
     self.c_obs = c_obs
 
 
-  def mas(self, verbose=False):
-    n_proc = psutil.cpu_count(logical=True)
+  def mas(self, verbose=False, both_flag=False):
+    n_proc = psutil.cpu_count(logical=False)
 
     self.w = self.k/math.sqrt(constant.E*constant.M)
 
@@ -124,6 +124,8 @@ class Ellipse(object):
     pool.close()
     pool.join()
 
+    if both_flag:
+      return(np.mean(error),max(error))
     return(max(error))
 
     #plt.plot(2*math.pi*np.arange(0,N, 1/EP)/N, error, label = "ERROR")
