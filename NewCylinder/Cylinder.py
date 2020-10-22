@@ -40,10 +40,11 @@ class Cylinder(object):
     r_cri = math.pow(self.r_c,2)/self.r_s
 
     # If r_aux less than r_critical no need to execute
-    if self.r_aux < r_cri:
-      print('r_aux={:f} is less than r_cri={:f}'.format(self.r_aux,r_cri))
-      exit()
-
+    
+    #if self.r_aux < r_cri:
+    #  print('r_aux={:f} is less than r_cri={:f}'.format(self.r_aux,r_cri))
+    #  exit()
+    
     # Speed of light
     c = 1/math.sqrt(constant.E * constant.M)
 

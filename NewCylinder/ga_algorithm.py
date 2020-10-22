@@ -63,6 +63,7 @@ class geneticalgorithm():
     def __init__(self, function, dimension, variable_type='bool', \
                  variable_boundaries=None,\
                  variable_type_mixed=None, \
+                 r_c = 0.8,\
                  function_timeout=10,\
                  algorithm_parameters={'max_num_iteration': None,\
                                        'population_size':100,\
@@ -132,7 +133,7 @@ class geneticalgorithm():
         #dimension
         
         self.dim=int(dimension)
-        
+        self.r_c=r_c
         #############################################################
         # input variable type
         
@@ -431,9 +432,10 @@ class geneticalgorithm():
         plt.xlabel('Iteration')
         plt.ylabel('Objective function')
         plt.title('Genetic Algorithm')
-        plt.show()
-       
-        exit()
+        plt.savefig('cylpi%s.png' % str(self.r_c)[0:5], dpi=400, bbox_inches='tight')
+        #plt.show()
+        
+        return(self.report)
         if self.stop_mniwi==True:
             sys.stdout.write('\nWarning: GA is terminated due to the'+\
                              ' maximum number of iterations without improvement was met!')
@@ -541,6 +543,6 @@ class geneticalgorithm():
         sys.stdout.flush()     
 ###############################################################################            
 ###############################################################################
-            
+    
             
             
