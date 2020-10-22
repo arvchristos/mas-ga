@@ -5,6 +5,7 @@ from scipy import special
 import cmath
 import itertools
 import multiprocessing as mp
+import psutil
 
 class Cylinder(object):
   """
@@ -23,14 +24,14 @@ class Cylinder(object):
     self.r_obs = r_obs
     self.phi_s = phi_s
 
-  def mas(self, verbose=False):
+  def mas(self, verbose=False, both_flag=False ):
     """
     Execute MAS algorithm
     """
 
     discrete_range = range(-100, 101)
 
-    n_proc = mp.cpu_count()
+    n_proc = psutil.cpu_count(logical=False)
 
     ################
     # Verify input #
@@ -58,7 +59,6 @@ class Cylinder(object):
 
     # d_p :  distance between filament I and collocation point p
 
-    pool = mp.Pool()
     pool = mp.Pool(processes=n_proc)
 
     self.d_p = pool.map(self.d_p_sqrt, range(self.N))
@@ -72,7 +72,6 @@ class Cylinder(object):
 
     # B_bessel : Right hand side of eq 22
 
-    pool = mp.Pool(processes=n_proc)
     B_bessel = np.array(pool.map(self.B_bessel_worker, range(self.N)))
     #for i in range(len(B_bessel)):
     #  B_bessel[i] = -1*special.hankel1(0, k*d_p[i])
@@ -87,7 +86,6 @@ class Cylinder(object):
 
     paramlist = list(itertools.product(range(self.N),range(self.N)))
 
-    pool = mp.Pool(processes=n_proc)
     res = np.array(pool.map(self.b_pl_worker, paramlist))
     self.b_pl = res.reshape(self.N, self.N)
 
@@ -97,7 +95,6 @@ class Cylinder(object):
 
     # A_bessel : left hand side of eq22
 
-    pool = mp.Pool(processes=n_proc)
     res = np.array(pool.map(self.A_bessel_worker, paramlist))
     A_bessel = res.reshape(self.N, self.N)
 
@@ -118,14 +115,12 @@ class Cylinder(object):
 
     # r_obs_s[i] = sqrt(A - B*cos(C*i - phi_s)
 
-    pool = mp.Pool(processes=n_proc)
     self.r_obs_s = pool.map(self.r_obs_s_worker, np.arange(0, self.N, 1/self.EP))
 
     if verbose:
       print("r_obs_s")
       print(self.r_obs_s)
 
-    pool = mp.Pool(processes=n_proc)
     self.Ez_inc = np.array(pool.map(self.Ez_inc_worker, range(self.N*self.EP)))
 
     if verbose:
@@ -141,11 +136,9 @@ class Cylinder(object):
 
     # A_bessel : left hand side of eq22
 
-    pool = mp.Pool(processes=n_proc)
     res = np.array(pool.map(self.Ez_scat_deserialized_worker, paramlist))
     self.Ez_scat_deserialized = res.reshape(self.N*self.EP, self.N)
 
-    pool = mp.Pool(processes=n_proc)
     self.Ez_scat = np.array(pool.map(self.Ez_scat_worker, range(self.N*self.EP)))
 
     # A_bessel : left hand side of eq22
@@ -169,11 +162,9 @@ class Cylinder(object):
 
     # A_bessel : left hand side of eq22
 
-    pool = mp.Pool(processes=n_proc)
     res = np.array(pool.map(self.Ez_scat_true_deserialized_worker, paramlist))
     self.Ez_scat_true_deserialized = res.reshape(self.N*self.EP, len(discrete_range))
 
-    pool = mp.Pool(processes=n_proc)
     self.Ez_scat_true = np.array(pool.map(self.Ez_scat_true_worker, range(self.N*self.EP)))
 
     if verbose:
@@ -187,6 +178,11 @@ class Cylinder(object):
     if verbose:
       print(error)
 
+    pool.close()
+    pool.join()
+
+    if both_flag:
+      return(np.mean(error),max(error))
     return max(error)
 
 
