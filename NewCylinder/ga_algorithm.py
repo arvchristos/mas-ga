@@ -64,7 +64,7 @@ class geneticalgorithm():
                  variable_boundaries=None,\
                  variable_type_mixed=None, \
                  r_c = 0.8,\
-                 function_timeout=10,\
+                 function_timeout=30,\
                  algorithm_parameters={'max_num_iteration': None,\
                                        'population_size':100,\
                                        'mutation_probability':0.1,\
@@ -420,22 +420,19 @@ class geneticalgorithm():
         self.output_dict={'variable': self.best_variable, 'function':\
                           self.best_function}
         show=' '*100
-        sys.stdout.write('\r%s' % (show))
-        sys.stdout.write('\r The best solution found:\n %s' % (self.best_variable))
-        sys.stdout.write('\n\n Objective function:\n %s\n' % (self.best_function))
-
-        print("Best population on every generation")
-        print(self.report)
+        #sys.stdout.write('\r%s' % (show))
+        #sys.stdout.write('\r The best solution found:\n %s' % (self.best_variable))
+        #sys.stdout.write('\n\n Objective function:\n %s\n' % (self.best_function))
         sys.stdout.flush() 
         re=np.array(self.report)
-        plt.plot(re)
-        plt.xlabel('Iteration')
-        plt.ylabel('Objective function')
-        plt.title('Genetic Algorithm')
-        plt.savefig('cylpi%s.png' % str(self.r_c)[0:5], dpi=400, bbox_inches='tight')
+        #plt.plot(re)
+        #plt.xlabel('Iteration')
+        #plt.ylabel('Objective function')
+        #plt.title('Genetic Algorithm')
+        #plt.savefig('cylpi%s.png' % str(self.r_c)[0:5], dpi=400, bbox_inches='tight')
         #plt.show()
         
-        return(self.report)
+        return(self.report, self.output_dict)
         if self.stop_mniwi==True:
             sys.stdout.write('\nWarning: GA is terminated due to the'+\
                              ' maximum number of iterations without improvement was met!')
