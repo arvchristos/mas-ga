@@ -4,35 +4,35 @@ from ga_algorithm import geneticalgorithm as ga
 from Cylinder import Cylinder
 import matplotlib.pyplot as plt
 ### Init parameters ###
-r_c, r_obs = 0.8000, 0.8000 # The same 
-r_s = 1.6
-N = 40
+r_c, r_obs =10*math.pi ,10*math.pi  # The same 
+r_s = 1.6*r_c
+N = 100
 
 
-limits=np.array([[0,1]]*1)
+limits=np.array([[0,r_c]]*1)
 
 
 ### defined functions ### 
 def evaluation_function(value):
-  schema = Cylinder(r_c= r_c, r_s=r_s, r_aux=value, r_obs=r_obs)
+  schema = Cylinder(N= N, r_c= r_c, r_s=r_s, r_aux=value, r_obs=r_obs)
   return schema.mas()
 
 def evaluation_function2(value):
-  schema = Cylinder(r_c= r_c, r_s=r_s, r_aux=value, r_obs=r_obs)
+  schema = Cylinder(N = N, r_c= r_c, r_s=r_s, r_aux=value, r_obs=r_obs)
   return schema.mas(champion=True)
 def eval_mas(value):
-  schema = Cylinder(r_c= r_c, r_s=r_s, r_aux=value, r_obs=1.5)
+  schema = Cylinder(N= N, r_c= r_c, r_s=r_s, r_aux=value, r_obs=1.5*r_c)
   return schema.mas(champion=True)
 
 def eval(value):
 	return value
 
 
-rules={'max_num_iteration': 10,
-	   'population_size':20,
-       'mutation_probability':0.8,
-	   'elit_ratio': 0.1,
-	   'crossover_probability': 0.4,
+rules={'max_num_iteration': 25,
+	   'population_size': 25,
+       'mutation_probability': 0.85,
+	   'elit_ratio': 0.01,
+	   'crossover_probability': 0.1,
 	   'parents_portion': 0.1,
 	   'crossover_type':'uniform',
 	   'max_iteration_without_improv':None}	
@@ -97,8 +97,9 @@ plt.xlabel('Generations')
 plt.ylabel('Max Error')
 plt.title('Error Convergence cylinder = %s' %(str(r_c)[0:5]))
 plt.savefig('cylpi%s.png' % str(r_c)[0:5], dpi=400, bbox_inches='tight')
-plt.show()
+#plt.show()
 #######################################################################
 ### run for different params
 
 
+## rerun ez_maz for p/15 p/2 p :O ##
