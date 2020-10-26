@@ -3,10 +3,11 @@ import random, time, math, pickle
 from ga_algorithm import geneticalgorithm as ga
 from Cylinder import Cylinder
 import matplotlib.pyplot as plt
+from numpy import savetxt
 ### Init parameters ###
-r_c, r_obs =10*math.pi ,10*math.pi  # The same 
+r_c, r_obs = math.pi/15 , math.pi/15  # The same 
 r_s = 1.6*r_c
-N = 100
+N = 25
 
 
 limits=np.array([[0,r_c]]*1)
@@ -28,8 +29,8 @@ def eval(value):
 	return value
 
 
-rules={'max_num_iteration': 25,
-	   'population_size': 25,
+rules={'max_num_iteration': 35,
+	   'population_size': 30,
        'mutation_probability': 0.85,
 	   'elit_ratio': 0.01,
 	   'crossover_probability': 0.1,
@@ -64,7 +65,7 @@ print("with mean error = ", mean)
 print("max error = ", max_)
 print("and CN = ", CN)
 _, _, ezmas, _ = eval_mas(champion.get('variable'))
-print("and ez_MAS value", ezmas)
+#print("and ez_MAS value", ezmas)
 ######################################################################
 ### write data on a file ###
 with open("cylinder%s.txt" %str(r_c)[0:5], "w") as fin:
@@ -82,10 +83,9 @@ with open("cylinder%s.txt" %str(r_c)[0:5], "w") as fin:
 	for person in report:
 		fin.write("\n"+"%s" %person)
 	
+### save file ###
+savetxt("EZ_MAS%s.txt" %str(r_c)[0:5], ezmas, delimiter=',')
 
-f = open("EZ_MAS%s.txt" %str(r_c)[0:5], 'wb')
-pickle.dump(ezmas, f)
-f.close()
 ### to load ###
 #f = open('store.pckl', 'rb')
 #obj = pickle.load(f)
