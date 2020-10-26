@@ -306,7 +306,7 @@ class geneticalgorithm():
             #############################################################
             #Sort
             pop = pop[pop[:,self.dim].argsort()]
-
+            
                 
             
             if pop[0,self.dim]<self.best_function:
@@ -366,7 +366,7 @@ class geneticalgorithm():
             #############################################################  
             #New generation
             pop=np.array([np.zeros(self.dim+1)]*self.pop_s)
-            
+            []
             for k in range(0,self.par_s):
                 pop[k]=par[k].copy()
                 

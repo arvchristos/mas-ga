@@ -78,7 +78,7 @@ with open("cylinder%s.txt" %str(r_c)[0:5], "w") as fin:
 			  "and %s seconds" %str(time_elasped%60)[0:4])
 	fin.write("\n \n")
 	fin.write("mean(error) = %s " %mean +"max(error) = %s " %max_ +
-		      "CN = %s" %CN ,"expected r_cri value = %s" %(r_c/1.6))
+		      "CN = %s" %CN)
 	fin.write("\nprinting the best r_aux per generation")
 	for person in report:
 		fin.write("\n"+"%s" %person)
