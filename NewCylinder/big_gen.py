@@ -7,9 +7,9 @@ from numpy import savetxt
 ### Init parameters ###
 r_c, r_obs = 10*math.pi , 10*math.pi  # The same 
 r_s = 1.6*r_c
-N = 80
+N = 140
 k_arr = [0.006666, 0.025464790894703, 0.05, 0.1, 0.15, 0.2, 2, 10]
-k = k_arr[4]
+k = k_arr[6]
 limits=np.array([[0,r_c]]*1)
 
 
@@ -33,8 +33,8 @@ rules={'max_num_iteration': 25,
 	   'population_size': 15,
        'mutation_probability': 0.85,
 	   'elit_ratio': 0.01,
-	   'crossover_probability': 0.1,
-	   'parents_portion': 0.1,
+	   'crossover_probability': 0.15,
+	   'parents_portion': 0.05,
 	   'crossover_type':'uniform',
 	   'max_iteration_without_improv':None}	
 
@@ -68,7 +68,7 @@ _, _, ezmas, _ = eval_mas(champion.get('variable'))
 #print("and ez_MAS value", ezmas)
 ######################################################################
 ### write data on a file ###
-with open("Kcylinder%s.txt" %str(r_c)[0:5], "w") as fin:
+with open("Kcylinder%s.txt" %str(k)[0:5], "w") as fin:
 	fin.write("Problem parameters:")
 	fin.write("\nr_cylinder = %s " %r_c +"k = %s \n" %k + "r_obs = %s " %r_obs + "r_s = %s" %r_s)
 	fin.write("\nN = %s" %N)
@@ -102,7 +102,7 @@ plt.savefig('K_cylpi%s.png' % str(r_c)[0:5], dpi=400, bbox_inches='tight')
 """
 #######################################################################
 
-## R_CRI δίπλα στα ερρορς
+## R_CRI 
 
 ##
 ##
