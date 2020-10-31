@@ -4,15 +4,18 @@ from ga_algorithm import geneticalgorithm as ga
 from Cylinder import Cylinder
 import matplotlib.pyplot as plt
 from numpy import savetxt
-### Init parameters ###
+
+### Init parameters ######################################################
 r_c, r_obs = 10*math.pi , 10*math.pi  # The same 
 r_s = 1.6*r_c
-N = 120
 k_arr = [0.006666, 0.025464790894703, 0.05, 0.1, 0.15, 0.2, 1, 2, 10]
 k = k_arr[6]
 limits=np.array([[0,r_c]]*1)
+### Basic ################################################################
 generations = 10
-
+N = 120
+pop = 25
+##########################################################################
 ### defined functions ### 
 def evaluation_function(value):
   schema = Cylinder(k=k, N= N, r_c=r_c, r_s=r_s, r_aux=value, r_obs=r_obs)
@@ -28,9 +31,9 @@ def eval_mas(value):
 def eval(value):
 	return value
 
-
+###################### rules & model param ###############################
 rules={'max_num_iteration': generations,
-	   'population_size': 30,
+	   'population_size': pop,
        'mutation_probability': 0.85,
 	   'elit_ratio': 0.01,
 	   'crossover_probability': 0.15,
@@ -68,11 +71,12 @@ _, _, ezmas, _ = eval_mas(champion.get('variable'))
 #print("and ez_MAS value", ezmas)
 ######################################################################
 ### write data on a file ###
-with open("Kcylindergen%s.txt" %str(generations)[0:5], "w") as fin:
+with open("genpop%s.txt" %str(generations)[0:5], "w") as fin:
 	fin.write("Problem parameters:")
 	fin.write("\nr_cylinder = %s " %r_c +"k = %s \n" %k + "r_obs = %s " %r_obs + "r_s = %s" %r_s)
 	fin.write("\nN = %s" %N)
 	fin.write("\nGenerations = %s" %generations)
+	fin.write("\nPopulation = %s" %pop)
 	fin.write("\nResults:")
 	fin.write("\nBest r_aux value was found to be %s " %champion.get('variable')+
 			  "in %s minutes " %(time_elasped//60) +
@@ -85,7 +89,7 @@ with open("Kcylindergen%s.txt" %str(generations)[0:5], "w") as fin:
 		fin.write("\n"+"%s" %person)
 	
 ### save file ###
-savetxt("Kezmasgen31.41_%s.txt" %str(generations)[0:5], ezmas, delimiter=',')
+savetxt("genpop%s.txt" %str(generations)[0:5], ezmas, delimiter=',')
 
 ### to load ###
 #f = open('store.pckl', 'rb')
