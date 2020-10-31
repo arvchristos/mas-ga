@@ -4,6 +4,7 @@ from ga_algorithm import geneticalgorithm as ga
 from Cylinder import Cylinder
 import matplotlib.pyplot as plt
 from numpy import savetxt
+import argparse
 
 ### Init parameters ######################################################
 r_c, r_obs = 10*math.pi , 10*math.pi  # The same 
@@ -12,9 +13,21 @@ k_arr = [0.006666, 0.025464790894703, 0.05, 0.1, 0.15, 0.2, 1, 2, 10]
 k = k_arr[6]
 limits=np.array([[0,r_c]]*1)
 ### Basic ################################################################
-generations = 10
-N = 120
-pop = 25
+parser = argparse.ArgumentParser(description='Execute GA.')
+parser.add_argument('generations', metavar='g', type=int, nargs='1',
+                   help='Generations number')
+
+parser.add_argument('nsources', metavar='N', type=int, nargs='1',
+                   help='Num of auxiliary sources')
+
+parser.add_argument('pop', metavar='p', type=int, nargs='1',
+                   help='Num of populations')
+
+
+args = parser.parse_args()
+generations = args.generations
+N = args.N
+pop = args.pop
 ##########################################################################
 ### defined functions ### 
 def evaluation_function(value):
@@ -71,7 +84,7 @@ _, _, ezmas, _ = eval_mas(champion.get('variable'))
 #print("and ez_MAS value", ezmas)
 ######################################################################
 ### write data on a file ###
-with open("genpop%s.txt" %str(generations)[0:5], "w") as fin:
+with open("%s_%s.txt" %(str(generations), str(pop)), "w") as fin:
 	fin.write("Problem parameters:")
 	fin.write("\nr_cylinder = %s " %r_c +"k = %s \n" %k + "r_obs = %s " %r_obs + "r_s = %s" %r_s)
 	fin.write("\nN = %s" %N)
@@ -87,9 +100,9 @@ with open("genpop%s.txt" %str(generations)[0:5], "w") as fin:
 	fin.write("\nprinting the best r_aux per generation")
 	for person in report:
 		fin.write("\n"+"%s" %person)
-	
+
 ### save file ###
-savetxt("genpop%s.txt" %str(generations)[0:5], ezmas, delimiter=',')
+savetxt("ezmas_%s_%s.txt" %(str(generations), str(pop)), ezmas, delimiter=',')
 
 ### to load ###
 #f = open('store.pckl', 'rb')
