@@ -7,11 +7,11 @@ from numpy import savetxt
 ### Init parameters ###
 r_c, r_obs = 10*math.pi , 10*math.pi  # The same 
 r_s = 1.6*r_c
-N = 140
-k_arr = [0.006666, 0.025464790894703, 0.05, 0.1, 0.15, 0.2, 2, 10]
+N = 120
+k_arr = [0.006666, 0.025464790894703, 0.05, 0.1, 0.15, 0.2, 1, 2, 10]
 k = k_arr[6]
 limits=np.array([[0,r_c]]*1)
-
+generations = 10
 
 ### defined functions ### 
 def evaluation_function(value):
@@ -29,8 +29,8 @@ def eval(value):
 	return value
 
 
-rules={'max_num_iteration': 25,
-	   'population_size': 15,
+rules={'max_num_iteration': generations,
+	   'population_size': 30,
        'mutation_probability': 0.85,
 	   'elit_ratio': 0.01,
 	   'crossover_probability': 0.15,
@@ -68,10 +68,11 @@ _, _, ezmas, _ = eval_mas(champion.get('variable'))
 #print("and ez_MAS value", ezmas)
 ######################################################################
 ### write data on a file ###
-with open("Kcylinder%s.txt" %str(k)[0:5], "w") as fin:
+with open("Kcylindergen%s.txt" %str(generations)[0:5], "w") as fin:
 	fin.write("Problem parameters:")
 	fin.write("\nr_cylinder = %s " %r_c +"k = %s \n" %k + "r_obs = %s " %r_obs + "r_s = %s" %r_s)
 	fin.write("\nN = %s" %N)
+	fin.write("\nGenerations = %s" %generations)
 	fin.write("\nResults:")
 	fin.write("\nBest r_aux value was found to be %s " %champion.get('variable')+
 			  "in %s minutes " %(time_elasped//60) +
@@ -84,7 +85,7 @@ with open("Kcylinder%s.txt" %str(k)[0:5], "w") as fin:
 		fin.write("\n"+"%s" %person)
 	
 ### save file ###
-savetxt("Kezmas31.41_%s.txt" %str(k)[0:5], ezmas, delimiter=',')
+savetxt("Kezmasgen31.41_%s.txt" %str(generations)[0:5], ezmas, delimiter=',')
 
 ### to load ###
 #f = open('store.pckl', 'rb')
