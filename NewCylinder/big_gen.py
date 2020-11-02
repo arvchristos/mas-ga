@@ -4,8 +4,7 @@ from ga_algorithm import geneticalgorithm as ga
 from Cylinder import Cylinder
 import matplotlib.pyplot as plt
 from numpy import savetxt
-import argparse
-
+import sys
 ### Init parameters ######################################################
 r_c, r_obs = 10*math.pi , 10*math.pi  # The same 
 r_s = 1.6*r_c
@@ -13,21 +12,9 @@ k_arr = [0.006666, 0.025464790894703, 0.05, 0.1, 0.15, 0.2, 1, 2, 10]
 k = k_arr[6]
 limits=np.array([[0,r_c]]*1)
 ### Basic ################################################################
-parser = argparse.ArgumentParser(description='Execute GA.')
-parser.add_argument('generations', metavar='g', type=int, nargs='1',
-                   help='Generations number')
-
-parser.add_argument('nsources', metavar='N', type=int, nargs='1',
-                   help='Num of auxiliary sources')
-
-parser.add_argument('pop', metavar='p', type=int, nargs='1',
-                   help='Num of populations')
-
-
-args = parser.parse_args()
-generations = args.generations
-N = args.N
-pop = args.pop
+generations = int(sys.argv[1])
+N = int(sys.argv[2])
+pop = int(sys.argv[3])
 ##########################################################################
 ### defined functions ### 
 def evaluation_function(value):
