@@ -10,7 +10,9 @@ pi = math.pi
 ab = [(pi/10, pi/11),(0.9, 0.87), (2.1, 1.7), (4.3, 4), (2*pi, 1.8*pi), (2.4*pi, 1.94*pi), (6*pi, 4.4*pi)]
 a,b = ab[int(sys.argv[1])]
 critical = [0.416597790450531, 0.256038191595620, 0.587087047901807, 0.366970554373477, 0.435889894354067, 0.588725082039335, 0.679869268479038]	
-N = 40
+k_arr = [pi/20, 0.45/pi, 2.1/(2*pi), 4.3/(2*pi), 1, 1.2, 3]
+k = k_arr[int(sys.argv[2])]
+N = int(sys.argv[3])
 generations = 5 
 population = 5
 limits = np.array([[0,1]]*1)
@@ -18,14 +20,14 @@ c_obs = 1
 
 ### defined functions ### 
 def evaluation_function(value):
-  schema = Ellipse(N=N, a=a, b=b, c_aux=value, c_obs=c_obs)
+  schema = Ellipse(N=N, a=a, b=b, k=k, c_aux=value, c_obs=c_obs)
   return schema.mas()
 
 def evaluation_function2(value):
-  schema = Ellipse(N=N, a=a, b=b, c_aux=value, c_obs=c_obs)
+  schema = Ellipse(N=N, a=a, b=b, k=k, c_aux=value, c_obs=c_obs)
   return schema.mas(champion=True)
 def eval_mas(value):
-  schema = Ellipse(N=N, a=a, b=b, c_aux=value, c_obs=2*c_obs)
+  schema = Ellipse(N=N, a=a, b=b, k=k, c_aux=value, c_obs=2*c_obs)
   return schema.mas(champion=True)
 
 def eval(value):
@@ -73,7 +75,7 @@ _, _, ezmas, _ = eval_mas(champion.get('variable'))
 with open("ellipse%s.txt" %(sys.argv[1]), "w") as fin:
 	fin.write("Problem parameters:")
 	fin.write("\n a = %s " %a + "b = %s " %b + "c_obs = %s" %c_obs)
-	fin.write("\nN = %s" %N)
+	fin.write("\nN = %s " %N +"k = %s" %k)
 	fin.write("\nGenerations = %s " %generations +"population = %s" %population)
 	fin.write("\nResults:")
 	fin.write("\nBest r_aux value was found to be %s " %champion.get('variable')+
