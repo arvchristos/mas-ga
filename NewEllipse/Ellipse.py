@@ -65,10 +65,8 @@ class Ellipse(object):
 
     self.sol = np.array(pool.map(self.sol_worker, np.arange(0, self.N, 1/self.EP)))
 
-    pool = mp.Pool(processes=n_proc)
     self.x_act = np.array(pool.map(self.x_act_worker, np.arange(0, self.N*self.EP, 1)))
 
-    pool = mp.Pool(processes=n_proc)
     self.y_act = np.array(pool.map(self.y_act_worker, np.arange(0, self.N*self.EP, 1)))
 
 
@@ -78,15 +76,11 @@ class Ellipse(object):
 
     # Dicretisation of the auxiliary surface.
 
-    pool = mp.Pool(processes=n_proc)
     self.sol = np.array(pool.map(self.sol_worker, np.arange(0, self.N, 1)))
 
-    pool = mp.Pool(processes=n_proc)
     self.x_aux = np.array(pool.map(self.x_aux_worker, np.arange(0, self.N, 1)))
 
-    pool = mp.Pool(processes=n_proc)
     self.y_aux = np.array(pool.map(self.y_aux_worker, np.arange(0, self.N, 1)))
-
 
     # Collocation points.
     self.x_col = self.x_aux/self.c_aux
@@ -100,13 +94,10 @@ class Ellipse(object):
     # Auxiliary currents
 
     # Determination of equation 6
-
-    pool = mp.Pool(processes=n_proc)
     B = np.array(pool.map(self.B_worker, np.arange(0, self.N, 1)))
 
     paramlist = list(itertools.product(range(self.N),range(self.N)))
 
-    pool = mp.Pool(processes=n_proc)
     res = np.array(pool.map(self.A_worker, paramlist))
     A = res.reshape(self.N, self.N)
 
@@ -117,7 +108,6 @@ class Ellipse(object):
 
     self.I_aux = np.linalg.solve(A, B)
 
-    pool = mp.Pool(processes=n_proc)
     Ez_inc = np.array(pool.map(self.Ez_inc_worker, np.arange(0, self.N*self.EP, 1)))
 
     # b_pl : distance between auxiliary filament l and collocation point p
@@ -127,11 +117,9 @@ class Ellipse(object):
 
     # A_bessel : left hand side of eq22
 
-    pool = mp.Pool(processes=n_proc)
     res = np.array(pool.map(self.Ez_scat_deserialized_worker, paramlist))
     self.Ez_scat_deserialized = res.reshape(self.N*self.EP, self.N)
 
-    pool = mp.Pool(processes=n_proc)
     Ez_scat = np.array(pool.map(self.Ez_scat_worker, range(self.N*self.EP)))
 
     Ez_MAS = np.add(Ez_inc, Ez_scat)
@@ -141,6 +129,9 @@ class Ellipse(object):
     if verbose:
       print(error)
 
+    pool.close()
+    pool.join()
+    
     if champion:
       return(np.mean(error), max(error), Ez_MAS, CN)
     return(np.mean(error))
