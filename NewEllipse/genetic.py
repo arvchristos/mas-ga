@@ -13,8 +13,8 @@ critical = [0.416597790450531, 0.256038191595620, 0.587087047901807, 0.366970554
 k_arr = [pi/20, 0.45/pi, 2.1/(2*pi), 4.3/(2*pi), 1, 1.2, 3]
 k = k_arr[int(sys.argv[2])]
 N = int(sys.argv[3])
-generations = 5 
-population = 5
+generations = 20 
+population = 20
 limits = np.array([[0,1]]*1)
 c_obs = 1
 
