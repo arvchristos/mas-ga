@@ -72,7 +72,7 @@ _, _, ezmas, _ = eval_mas(champion.get('variable'))
 #print("and ez_MAS value", ezmas)
 ######################################################################
 ### write data on a file ###
-with open("ellipse%s.txt" %(sys.argv[1]), "w") as fin:
+with open("ellipse%s.txt" %(sys.argv[2]), "w") as fin:
 	fin.write("Problem parameters:")
 	fin.write("\n a = %s " %a + "b = %s " %b + "c_obs = %s" %c_obs)
 	fin.write("\nN = %s " %N +"k = %s" %k)
@@ -83,13 +83,13 @@ with open("ellipse%s.txt" %(sys.argv[1]), "w") as fin:
 			  "and %s seconds" %str(time_elasped%60)[0:4])
 	fin.write("\n \n")
 	fin.write("mean(error) = %s " %mean + "max(error) = %s " %max_ +
-		      "CN = %s" %CN + "expected c_aux_critical value = %s" %str(critical[int(sys.argv[1])]))
+		      "CN = %s" %CN + " expected c_aux_critical value = %s" %str(critical[int(sys.argv[1])]))
 	fin.write("\nprinting the best r_aux per generation")
 	for person in report:
 		fin.write("\n"+"%s" %person)
 	
 ### save file ######################################################
-savetxt("EZ_MAS%s.txt" %str(sys.argv[1]), ezmas, delimiter=',')
+savetxt("EZ_MAS%s.txt" %str(sys.argv[2]), ezmas, delimiter=',')
 
 ### to load ###
 #f = open('store.pckl', 'rb')

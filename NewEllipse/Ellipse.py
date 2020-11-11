@@ -42,7 +42,7 @@ class Ellipse(object):
 
   def mas(self, verbose=False, champion=False   ):
     
-    n_proc = psutil.cpu_count(logical=False)
+    n_proc = psutil.cpu_count(logical=True)
 
     self.w = self.k/math.sqrt(constant.E*constant.M)
 
