@@ -12,9 +12,9 @@ a,b = ab[int(sys.argv[1])]
 critical = [0.416597790450531, 0.256038191595620, 0.587087047901807, 0.366970554373477, 0.435889894354067, 0.588725082039335, 0.679869268479038]	
 k_arr = [pi/20, 0.45/pi, 2.1/(2*pi), 4.3/(2*pi), 1, 1.2, 3]
 k = k_arr[int(sys.argv[2])]
-N = int(sys.argv[3])
-generations = 20 
-population = 20
+N = int(sys.argv[5])
+generations = int(sys.argv[3]) 
+population = int(sys.argv[4])
 limits = np.array([[0,1]]*1)
 c_obs = 1
 
@@ -72,7 +72,7 @@ _, _, ezmas, _ = eval_mas(champion.get('variable'))
 #print("and ez_MAS value", ezmas)
 ######################################################################
 ### write data on a file ###
-with open("ellipse%s.txt" %(sys.argv[2]), "w") as fin:
+with open("ellipse%s_%s.txt" %(str(sys.argv[3]), str(sys.argv[4])), "w") as fin:
 	fin.write("Problem parameters:")
 	fin.write("\n a = %s " %a + "b = %s " %b + "c_obs = %s" %c_obs)
 	fin.write("\nN = %s " %N +"k = %s" %k)
@@ -89,7 +89,7 @@ with open("ellipse%s.txt" %(sys.argv[2]), "w") as fin:
 		fin.write("\n"+"%s" %person)
 	
 ### save file ######################################################
-savetxt("EZ_MAS%s.txt" %str(sys.argv[2]), ezmas, delimiter=',')
+savetxt("EZ_MAS%s_%s.txt" %(str(sys.argv[3]), str(sys.argv[4])), ezmas, delimiter=',')
 
 ### to load ###
 #f = open('store.pckl', 'rb')
@@ -107,7 +107,6 @@ plt.savefig('cylpi%s.png' % str(r_c)[0:5], dpi=400, bbox_inches='tight')
 """
 #######################################################################
 
-## R_CRI δίπλα στα ερρορς
-
+## 
 ##
 ##
