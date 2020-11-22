@@ -49,7 +49,7 @@ rules={'max_num_iteration': generations,
 	   'max_iteration_without_improv':None}	
 
 model=ga(
-		 function=eval,
+		 function=evaluation_function,
 		 dimension=1,
 		 variable_type='real',
 		 variable_boundaries=limits,
