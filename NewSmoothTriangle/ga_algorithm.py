@@ -63,7 +63,7 @@ class geneticalgorithm():
     def __init__(self, function, dimension, variable_type='bool', \
                  variable_boundaries=None,\
                  variable_type_mixed=None, \
-                 function_timeout=30,\
+                 function_timeout=3000,\
                  algorithm_parameters={'max_num_iteration': None,\
                                        'population_size':100,\
                                        'mutation_probability':0.1,\
