@@ -31,8 +31,9 @@ class SmoothTriangle(object):
     self.c_obs = c_obs
 
   def mas(self, verbose=False, both_flag=False):
-    n_proc = psutil.cpu_count(logical=False)
-
+    #n_proc = 1   
+    n_proc = psutil.cpu_count(logical=True)
+#    print(n_proc)
     self.w = self.k/math.sqrt(constant.E*constant.M)
     self.lamdaNum = 2*math.pi/self.k
 
