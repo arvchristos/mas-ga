@@ -1,9 +1,9 @@
 Problem parameters:
  gamma = 0 c_obs = 1
-N = 51 k = 5
+N = 81 k = 5
 Generations = 20 population = 20
 Results:
-Best r_aux value was found to be [0.80675949] in 13.0 minutes and 54.4 seconds
+Best r_aux value was found to be [0.29843867] in 26.0 minutes and 39.0 seconds
  
 mean(error) = nan max(error) = nan CN = nan expected c_aux_critical value = 0.921007874660096
 printing the best r_aux per generation
