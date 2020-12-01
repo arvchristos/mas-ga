@@ -17,7 +17,7 @@ class SmoothTriangle(object):
   """
   Smooth Triangle scatterer
   """
-  def __init__(self, N=50, a=0.2, gamma=0.28, c_aux=0.95, EP=21, E_0= 1, psi=0, k=1, c_obs=1):
+  def __init__(self, N=50, a=0.2, gamma=0.05, c_aux=0.95, EP=21, E_0= 1, psi=0, k=1, c_obs=1):
     """
     """
     self.N = N
@@ -27,13 +27,13 @@ class SmoothTriangle(object):
     self.EP = EP
     self.E_0 = E_0
     self.psi = psi
-    self.k = k
+    self.k = k  
     self.c_obs = c_obs
 
   def mas(self, verbose=False, both_flag=False):
     #n_proc = 1   
     n_proc = psutil.cpu_count(logical=True)
-#    print(n_proc)
+    
     self.w = self.k/math.sqrt(constant.E*constant.M)
     self.lamdaNum = 2*math.pi/self.k
 
@@ -53,7 +53,7 @@ class SmoothTriangle(object):
     # Discretisation of the actual smooth triangle.
 
     pool = mp.Pool(processes=n_proc)
-
+    
     self.sol = np.array(pool.map(self.sol_worker, np.arange(0, self.N, 1/self.EP)))
 
     self.x_act = np.array(pool.map(self.x_act_worker, np.arange(0, self.N*self.EP, 1)))
@@ -84,10 +84,10 @@ class SmoothTriangle(object):
     paramlist = list(itertools.product(range(self.N),range(self.N)))
 
     res = np.array(pool.map(self.A_worker, paramlist))
+    
     A = res.reshape(self.N, self.N)
 
     CN = np.linalg.cond(A)
-
     if verbose:
       print(CN)
 
@@ -111,12 +111,15 @@ class SmoothTriangle(object):
     error = abs(Ez_MAS)/max(abs(Ez_inc))
 
     if verbose:
-      print(error)
+        print(max(abs(Ez_inc)))
+
+      #print(error)
 
     pool.close()
     pool.join()
 
     if both_flag:
+
       return(np.mean(error),max(error), Ez_MAS, CN)
     return(max(error))
 

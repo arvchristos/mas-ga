@@ -9,10 +9,10 @@ import sys
 pi = math.pi
 ###
 gamma_array = [0.05, 0.28, 0.4, 0.5, 0.7, 1, 2, 5]
-gamma = int(sys.argv[1])
+gamma = gamma_array[int(sys.argv[1])]
 ###
 k_array = [0.05, 0.28, 0.4, 0.5, 0.7, 1, 2, 5]
-k = int(sys.argv[2])
+k = k_array[int(sys.argv[2])]
 ###
 critical_value = 0.921007874660096
 ###
@@ -31,6 +31,7 @@ def evaluation_function(value):
 def evaluation_function2(value):
   schema = SmoothTriangle(N=N, gamma=gamma, k=k, c_aux=value, c_obs=c_obs)
   return schema.mas(both_flag=True)
+
 def eval_mas(value):
   schema = SmoothTriangle(N=N, gamma=gamma, k=k, c_aux=value, c_obs=2*c_obs)
   return schema.mas(both_flag=True)
@@ -42,9 +43,9 @@ def eval(value):
 rules={'max_num_iteration': generations,
 	   'population_size': population,
        'mutation_probability': 0.85,
-	   'elit_ratio': 0.01,
-	   'crossover_probability': 0.1,
-	   'parents_portion': 0.1,
+	   'elit_ratio': 0.02,
+	   'crossover_probability': 0.05,
+	   'parents_portion': 0.2,
 	   'crossover_type':'uniform',
 	   'max_iteration_without_improv':None}	
 
