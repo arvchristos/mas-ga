@@ -1,9 +1,9 @@
 from SmoothTriangle import SmoothTriangle
 import sys
 import numpy as np
-gamma = 0.35
-N = 9 
-c_aux = 0.9
+gamma = 5
+N = 96
+c_aux = 0.921
 k = 1
 c_obs = 1
 

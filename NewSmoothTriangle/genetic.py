@@ -78,7 +78,7 @@ _, _, ezmas, _ = eval_mas(champion.get('variable'))
 #print("and ez_MAS value", ezmas)
 ######################################################################
 ### write data on a file ###
-with open("ellipse%s.txt" %(str(sys.argv[1])), "w") as fin:
+with open("ellipse%s.txt" %(str(sys.argv[2])), "w") as fin:
 	fin.write("Problem parameters:")
 	fin.write("\n gamma = %s " %gamma + "c_obs = %s" %c_obs)
 	fin.write("\nN = %s " %N +"k = %s" %k)
@@ -95,7 +95,7 @@ with open("ellipse%s.txt" %(str(sys.argv[1])), "w") as fin:
 		fin.write("\n"+"%s" %person)
 	
 ### save file ######################################################
-savetxt("EZ_MAS%s.txt" %(str(sys.argv[1])), ezmas, delimiter=',')
+savetxt("EZ_MAS%s.txt" %(str(sys.argv[2])), ezmas, delimiter=',')
 
 ### to load ###
 #f = open('store.pckl', 'rb')
@@ -108,7 +108,7 @@ plt.plot(report)
 plt.xlabel('Generations')
 plt.ylabel('Max Error')
 plt.title('Error Convergence SmoothTriangle %s' %(str(sys.argv[1])))
-plt.savefig('SmoothTriangleError%s.png' %(str(sys.argv[1])), dpi=400, bbox_inches='tight')
+plt.savefig('SmoothTriangleError%s.png' %(str(sys.argv[2])), dpi=400, bbox_inches='tight')
 #plt.show()
 
 #######################################################################
