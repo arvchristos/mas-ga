@@ -3,6 +3,10 @@ import math
 import numpy as np
 from scipy import special
 import cmath
+import multiprocessing as mp
+import psutil
+import itertools
+
 
 
 class Plane(object):
@@ -25,6 +29,11 @@ class Plane(object):
     self.mr = mr
 
   def mas(self, verbose=False):
+    
+    n_proc = psutil.cpu_count(logical=False)
+
+    pool = mp.Pool(processes=n_proc)
+    
     self.h_aux = self.b*self.h
     self.w = self.k/math.sqrt(constant.E*constant.M)
 
@@ -33,47 +42,37 @@ class Plane(object):
     # Auxiliary Currents #
     ######################
 
-    self.Bn =  np.zeros(2*self.N+1, dtype="complex_" )
     self.h2 = math.pow(self.h,2)
+    self.Bn = np.array(pool.map(self.Bn_worker, range(0,2*self.N+1)))
 
-    for i in range(0,2*self.N+1):
-      self.Bn[i] = -self.I*special.hankel1(0, self.k*math.sqrt(math.pow(self.decim_indices[i], 2) + self.h2))
-
-    self.Anl = np.zeros((2*self.N+1, 2*self.N+1), dtype="complex_" )
+    paramlist = list(itertools.product(range(2*self.N+1),range(2*self.N+1)))
     self.h_aux2 = math.pow(self.h_aux,2)
-    for i in range(0,2*self.N+1):
-      for j in range(0,2*self.N+1):
-        self.Anl[i][j] = special.hankel1(0, self.k*math.sqrt( math.pow(self.decim_indices[i] - self.decim_indices[j],2) + self.h_aux2 ))
 
+    res = np.array(pool.map(self.Anl_worker, paramlist))
+    self.Anl = res.reshape(2*self.N+1, 2*self.N+1) 
+    
     self.In = np.linalg.solve(self.Anl,self.Bn)
 
     ####################
     # Field quantities #
     ####################
     self.decim_indices_M = np.arange((-self.M*self.d), self.M*self.d + self.d, self.d/self.EP)
-    self.Ez_inc = np.zeros(2*self.M*self.EP+1, dtype="complex_" )
     self.b = math.pow(self.y-self.h,2)
     self.a = -((math.pow(self.k,2)*self.I)/(4*self.w*constant.E))
 
-    for i in range(0,2*self.M*self.EP+1):
-      self.Ez_inc[i] = self.a*special.hankel1(0, self.k * math.sqrt(math.pow(self.decim_indices_M[i],2) + self.b) )
+    self.Ez_inc = np.array(pool.map(self.Ez_inc_worker, range(0,2*self.M*self.EP+1)))
 
-    self.Ez_scat = np.zeros(2*self.M*self.EP+1, dtype="complex_" )
     self.b = math.pow(self.y-self.h_aux,2)
     self.a = -((math.pow(self.k,2)*self.I)/(4*self.w*constant.E))
 
-    for i in range(0,2*self.M*self.EP+1):
-      for j in range(0,2*self.N+1):
-        self.Ez_scat[i] = self.Ez_scat[i] + self.In[j]*special.hankel1(0, self.k* math.sqrt(math.pow(self.decim_indices_M[i] - self.decim_indices[j],2) + self.b  ))
-      self.Ez_scat[i] = self.a * self.Ez_scat[i]
+    self.Ez_scat = np.array(pool.map(self.Ez_scat_worker, range(0,2*self.M*self.EP+1)))
 
     self.Ez_MAS = np.add(self.Ez_inc, self.Ez_scat)
 
-    self.Ez_image = np.zeros(2*self.M*self.EP+1, dtype="complex_" )
     b = math.pow(self.y+self.h,2)
     a = ((math.pow(self.k,2)*self.I)/(4*self.w*constant.E))
-    for i in range(0,2*self.M*self.EP+1):
-      self.Ez_image[i] = self.a*special.hankel1(0, self.k*math.sqrt(math.pow(self.decim_indices_M[i],2) + self.b ))
+
+    self.Ez_image = np.array(pool.map(self.Ez_image_worker, range(0,2*self.M*self.EP+1)))
 
     self.Ez_true = np.add(self.Ez_inc, self.Ez_image)
 
@@ -98,3 +97,23 @@ class Plane(object):
       print(error2)
 
       return max(error1)
+
+  def Bn_worker(self, N_index):
+    return -self.I*special.hankel1(0, self.k*math.sqrt(math.pow(self.decim_indices[N_index], 2) + self.h2))
+
+  def Anl_worker(self, params):
+    return special.hankel1(0, self.k*math.sqrt( math.pow(self.decim_indices[params[0]] - self.decim_indices[params[1]],2) + self.h_aux2 ))
+
+  def Ez_inc_worker(self, N_index):
+    return self.a*special.hankel1(0, self.k * math.sqrt(math.pow(self.decim_indices_M[N_index],2) + self.b) )
+
+  def Ez_scat_worker(self, N_index):
+    tmp = 0
+    for j in range(0,2*self.N+1):
+        tmp = tmp + self.In[j]*special.hankel1(0, self.k* math.sqrt(math.pow(self.decim_indices_M[N_index] - self.decim_indices[j],2) + self.b  ))
+    return self.a * tmp
+
+  def Ez_image_worker(self, N_index):
+    return self.a*special.hankel1(0, self.k*math.sqrt(math.pow(self.decim_indices_M[N_index],2) + self.b ))
+
+  
