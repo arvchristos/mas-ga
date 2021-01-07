@@ -7,7 +7,7 @@ import multiprocessing as mp
 import psutil
 import itertools
 
-
+##TO-DO : Return the mean/EZmas matrices when specific flag holds true
 
 class Plane(object):
   """
