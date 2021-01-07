@@ -12,26 +12,17 @@ import cmath
 import mpmath
 import psutil
 
-class Ellipse(object):
+
+class Squircle(object):
   """
-  object Cylinder scatterer
+  Smooth Triangle scatterer
   """
-  def __init__(self, N=55, a=0.5, b=0.2, c_aux=0.01, EP=21, E_0= 1, psi=0, k=1, c_obs=1):
+  def __init__(self, N=50, a=1.0, c_aux=0.95, EP=21, E_0= 1, psi=0, k=1, c_obs=1):
     """
-    # Inputs:
-	# N: number of auxiliary sources and collocation points
-	# a: Half length of the major axis
-	# b: Half length of the minor axis
-	# c_aux: Scaling of the auxiliary surface
-	# EP: Number of error points
-	# E_0: Amplitude of the incident wave
-	# psi: Angle of incidence
-	# k: Wavenumber
-	# c_obs: Observation points
     """
     self.N = N
     self.a = a
-    self.b = b
+    #self.gamma = gamma
     self.c_aux = c_aux
     self.EP = EP
     self.E_0 = E_0
@@ -39,17 +30,16 @@ class Ellipse(object):
     self.k = k
     self.c_obs = c_obs
 
-
-  def mas(self, verbose=False, champion=False   ):
-    
-    n_proc = psutil.cpu_count(logical=True)
+  def mas(self, verbose=False, both_flag=False):
+    n_proc = psutil.cpu_count(logical=False)
 
     self.w = self.k/math.sqrt(constant.E*constant.M)
+    self.lamdaNum = 2*math.pi/self.k
 
     # Circumference calculation
 
-    def x(x): return self.a*math.cos(x)
-    def y(y): return self.b*math.sin(y)
+    def x(x): return np.real(self.a* np.sign(np.cos(x))*math.sqrt(np.abs(np.cos(x))))
+    def y(y): return np.real(self.a* np.sign(np.sin(y))*math.sqrt(np.abs(np.sin(y))))
     def dx(t): return derivative(x, t, dx=1e-6)
     def dy(t): return derivative(y, t, dx=1e-6)
 
@@ -69,27 +59,21 @@ class Ellipse(object):
 
     self.y_act = np.array(pool.map(self.y_act_worker, np.arange(0, self.N*self.EP, 1)))
 
-
     # Collocation points
     self.x_obs = self.x_act*self.c_obs
     self.y_obs = self.y_act*self.c_obs
 
     # Dicretisation of the auxiliary surface.
 
-    self.sol = np.array(pool.map(self.sol_worker, np.arange(0, self.N, 1)))
+    self.x_aux = np.array(list(map(self.x_aux_worker, np.arange(0, self.N, 1))))
 
-    self.x_aux = np.array(pool.map(self.x_aux_worker, np.arange(0, self.N, 1)))
+    self.y_aux = np.array(list(map(self.y_aux_worker, np.arange(0, self.N, 1))))
 
-    self.y_aux = np.array(pool.map(self.y_aux_worker, np.arange(0, self.N, 1)))
 
     # Collocation points.
     self.x_col = self.x_aux/self.c_aux
     self.y_col = self.y_aux/self.c_aux
 
-
-    # Singularities
-    s1 = math.sqrt(self.a**2-self.b**2)
-    s2 = -s1
 
     # Auxiliary currents
 
@@ -116,13 +100,12 @@ class Ellipse(object):
     paramlist = list(itertools.product(np.arange(0,self.N*self.EP, 1),range(self.N)))
 
     # A_bessel : left hand side of eq22
-
     res = np.array(pool.map(self.Ez_scat_deserialized_worker, paramlist))
     self.Ez_scat_deserialized = res.reshape(self.N*self.EP, self.N)
 
     Ez_scat = np.array(pool.map(self.Ez_scat_worker, range(self.N*self.EP)))
 
-    Ez_MAS = np.add(Ez_inc, Ez_scat)
+    Ez_MAS = Ez_inc+Ez_scat
 
     error = abs(Ez_MAS)/max(abs(Ez_inc))
 
@@ -131,10 +114,10 @@ class Ellipse(object):
 
     pool.close()
     pool.join()
-    
-    if champion:
-      return(np.mean(error), max(error), Ez_MAS, CN)
-    return(np.mean(error))
+
+    if both_flag:
+      return(np.mean(error),max(error))
+    return(max(error))
 
     #plt.plot(2*math.pi*np.arange(0,N, 1/EP)/N, error, label = "ERROR")
     # plt.suptitle("ERROR")
@@ -146,10 +129,12 @@ class Ellipse(object):
 
 
   def f(self, t):
-    def x(x): return self.a*math.cos(x)
-    def y(y): return self.b*math.sin(y)
+    def x(x): return np.real(self.a* np.sign(np.cos(x))*math.sqrt(np.abs(np.cos(x))))
+    def y(y): return np.real(self.a* np.sign(np.sin(y))*math.sqrt(np.abs(np.sin(y))))
     def dx(t): return derivative(x, t, dx=1e-6)
     def dy(t): return derivative(y, t, dx=1e-6)
+
+    def f(t): return math.sqrt(dx(t)**2 + dy(t)**2)
 
     return math.sqrt(dx(t)**2 + dy(t)**2)
 
@@ -159,16 +144,16 @@ class Ellipse(object):
     return fsolve(sol_func, [1])
 
   def x_act_worker(self, index):
-    return self.a*math.cos(self.sol[index])
+    return self.a * np.sign(np.cos(self.sol[index])) * math.sqrt(np.abs(np.cos(self.sol[index])))
 
   def y_act_worker(self, index):
-    return self.b*math.sin(self.sol[index])
+    return self.a * np.sign(np.cos(self.sol[index])) * math.sqrt(np.abs(np.sin(self.sol[index])))
 
   def x_aux_worker(self, index):
-    return self.c_aux*self.a*math.cos(self.sol[index])
+    return self.c_aux * self.a * np.sign(np.cos(self.sol[index])) * math.sqrt(np.abs(np.cos(self.sol[index])))
 
   def y_aux_worker(self, index):
-    return self.c_aux*self.b*math.sin(self.sol[index])
+    return self.c_aux * self.a * np.sign(np.sin(self.sol[index])) * math.sqrt(np.abs(np.sin(self.sol[index])))
 
   def B_worker(self, index):
     return -self.E_0*cmath.exp(np.complex(0, -1*self.k*self.x_col[index]))

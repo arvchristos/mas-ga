@@ -1,0 +1,1 @@
+# Import SmoothSquare schema here
