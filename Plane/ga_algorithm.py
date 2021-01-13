@@ -63,7 +63,7 @@ class geneticalgorithm():
     def __init__(self, function, dimension, variable_type='bool', \
                  variable_boundaries=None,\
                  variable_type_mixed=None, \
-                 function_timeout=300,\
+                 function_timeout=900,\
                  algorithm_parameters={'max_num_iteration': None,\
                                        'population_size':100,\
                                        'mutation_probability':0.1,\
@@ -269,7 +269,6 @@ class geneticalgorithm():
         pop=np.array([np.zeros(self.dim+1)]*self.pop_s)
         solo=np.zeros(self.dim+1)
         var=np.zeros(self.dim)       
-        
         for p in range(0,self.pop_s):
          
             for i in self.integers[0]:
@@ -282,7 +281,7 @@ class geneticalgorithm():
                 solo[i]=var[i].copy()
 
 
-            obj=self.sim(var)            
+            obj=self.sim(var)
             solo[self.dim]=obj
             pop[p]=solo.copy()
 

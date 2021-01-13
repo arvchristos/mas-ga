@@ -9,7 +9,7 @@ EP = 21
 y = 0 for the GAs, y > 0 (e.g. 0.1h) for the field calculation (y is like c_obs!!)
 Gen = your choice (the same for every experiment)
 Pop = your choice (the same for every experiment)
-M = N = your choice (at I'd rather have the same N, but you can play should you encounter low errors; always check the CN and if you have doubts, draw the error function)
+M = N = your choice (at I'd rather have the same N, but you can play should you encounter low errors; always check the CN and if you have doubts, draw the error function')
     ~50.
 DO NOT FORGET TO SET M = N, OTHERWISE OUR METRICS WILL NOT BE INDICATING (actually, this is what my (hopefully) third paper is about!)!!!
 

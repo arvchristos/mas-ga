@@ -7,13 +7,13 @@ import multiprocessing as mp
 import psutil
 import itertools
 
-##TO-DO : Return the mean/EZmas matrices when specific flag holds true ## FIXED
+###original Christos' version
 
 class Plane(object):
   """
   docstring
   """
-  def __init__(self, N=50, k=1, h=1, I=1, b=-0.9, d=0.2, M=50, EP=21, y=0, er=1, mr=1, both_flag=False):
+  def __init__(self, N=50, k=1, h=1, I=1, b=-0.9, d=0.2, M=50, EP=21, y=0, er=1,mr=1):
     """
     """
     self.N = N
@@ -28,7 +28,7 @@ class Plane(object):
     self.er = er
     self.mr = mr
 
-  def mas(self, verbose=False, both_flag=False, CN_limit=pow(10,22)):
+  def mas(self, verbose=False):
     
     n_proc = psutil.cpu_count(logical=False)
 
@@ -69,8 +69,8 @@ class Plane(object):
 
     self.Ez_MAS = np.add(self.Ez_inc, self.Ez_scat)
 
-    self.b = math.pow(self.y+self.h,2)
-    self.a = ((math.pow(self.k,2)*self.I)/(4*self.w*constant.E))
+    b = math.pow(self.y+self.h,2)
+    a = ((math.pow(self.k,2)*self.I)/(4*self.w*constant.E))
 
     self.Ez_image = np.array(pool.map(self.Ez_image_worker, range(0,2*self.M*self.EP+1)))
 
@@ -80,18 +80,23 @@ class Plane(object):
       print("Ez_Image")
       print(self.Ez_image)
 
-    CN = np.linalg.cond(self.Anl)
-    if CN > CN_limit:
-      print(1)
-      return 1.0 #if CN is too big, return a gib error(1) as a penalty to the population values
+
     # Calculate errors
     abs_diff = abs(np.subtract(self.Ez_true, self.Ez_MAS))
-    error = abs_diff/max(abs(self.Ez_inc))
-    if both_flag:
-        return (np.mean(error), max(error), self.Ez_MAS, CN)
-    print(max(error))
-    return max(error)
-    
+    if self.y==0:
+      error = abs_diff/max(abs(self.Ez_inc))
+      print("error")
+      print(error)
+      return max(error)
+    else:
+      error1 = abs_diff/max(abs(self.Ez_inc))
+      error2 = abs_diff/max(abs(self.Ez_true))
+      print("error1")
+      print(error1)
+      print("error2")
+      print(error2)
+
+      return max(error1)
 
   def Bn_worker(self, N_index):
     return -self.I*special.hankel1(0, self.k*math.sqrt(math.pow(self.decim_indices[N_index], 2) + self.h2))
@@ -112,3 +117,4 @@ class Plane(object):
     return self.a*special.hankel1(0, self.k*math.sqrt(math.pow(self.decim_indices_M[N_index],2) + self.b ))
 
   
+

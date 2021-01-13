@@ -1,13 +1,13 @@
 import numpy as np
 import random, time, math, pickle
 from ga_algorithm import geneticalgorithm as ga
-from SmoothTriangle import SmoothTriangle
+from Plane import Plane
 import matplotlib.pyplot as plt
 from numpy import savetxt
 import sys
 
-## fix limits
 ## fix output to be two 2 vars fitted (wirting output etc.)
+## fix the 2 values Plane.py gets
 ### Init parameters ###
 pi = math.pi
 ###
@@ -17,13 +17,13 @@ h = h_array[int(sys.argv[1])]
 k_array = [pi/20, pi/10, pi/5, pi/4, 1, pi/2, pi]
 k = k_array[int(sys.argv[2])]
 ###
-critical_value = 0.921007874660096
+#critical_value = 0.921007874660096
 ###
 generations = int(sys.argv[3])
 population = int(sys.argv[4])
-N =   int(sys.argv[5])
+N = int(sys.argv[5])
 ###
-limits = np.array([[0,1]]*1) ### needs change
+limits = np.array([[-5,0],[0,1]]) ### needs change on the -2 when h is even smaller.
 ### b ---> negative number should converge to -1 (-2,0)
 ### d ---> should be small (0,1)
 
@@ -32,34 +32,34 @@ y_obs_mas = 0.1*h
 
 ### defined functions ### 
 def evaluation_function(value):
-  schema = SmoothTriangle(N=N, h=h, k=k, M=N, c_aux=value, y=y_obs)
+  schema = Plane(N=N, h=h, k=k, M=N, b=value[0], d=value[1], y=y_obs)
   return schema.mas()
 
 def evaluation_function2(value):
-  schema = SmoothTriangle(N=N, h=h, k=k, M=N, c_aux=value, y=y_obs)
+  schema = Plane(N=N, h=h, k=k, M=N, b=value[0], d=value[1], y=y_obs)
   return schema.mas(both_flag=True)
 
 def eval_mas(value):
-  schema = SmoothTriangle(N=N, h=h, k=k, M=N, c_aux=value, y=y_obs_mas)
+  schema = Plane(N=N, h=h, k=k, M=N, b=value[0], d=value[1], y=y_obs)
   return schema.mas(both_flag=True)
 
 def eval(value):
-	return value
+	return (value[0]-value[1])
 
 
 rules={'max_num_iteration': generations,
 	   'population_size': population,
        'mutation_probability': 0.85,
-	   'elit_ratio': 0.02,
-	   'crossover_probability': 0.00,
-	   'parents_portion': 0.2,
+	   'elit_ratio': 0.1,
+	   'crossover_probability': 0.001,
+	   'parents_portion': 0.3,
 	   'crossover_type':'uniform',
 	   'max_iteration_without_improv':None}	
 
 model=ga(
 		 function=evaluation_function,
 		 dimension=2,
-		 variable_type='real',
+		 variable_type=np.array([['real']]),
 		 variable_boundaries=limits,
 		 algorithm_parameters=rules)
 
@@ -75,19 +75,23 @@ print("\n time_elasped = ", time_elasped)
 print("printing error convergence...")
 for person in report:
 	print(person)
-print(champion)
-mean, max_, _, CN = evaluation_function2(champion.get('variable'))
+
+Best_pair = champion.get('variable')
+print(Best_pair,type(Best_pair))
+
+mean, max_, _, CN = evaluation_function2(Best_pair)
 print("champion is ", champion.get('variable'))
 print("with mean error = ", mean)
 print("max error = ", max_)
 print("and CN = ", CN)
-_, _, ezmas, _ = eval_mas(champion.get('variable'))
-#print("and ez_MAS value", ezmas)
+#ezmas = [1,1]
+_, _, ezmas, _ = eval_mas(Best_pair)
+print("and ez_MAS value", ezmas)
 ######################################################################
 ### write data on a file ###
-with open("ellipse%s_%s_%s_%s_%s.txt" %(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5])) , "w") as fin:
+with open("Plane%s_%s_%s_%s_%s.txt" %(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5])) , "w") as fin:
 	fin.write("Problem parameters:")
-	fin.write("\n h = %s " %h + "y_obs = %s" %)
+	fin.write("\n h = %s " %h + "y_obs = %s" %y_obs)
 	fin.write("\nN = %s " %N +"k = %s" %k)
 	fin.write("\nGenerations = %s " %generations +"population = %s" %population)
 	fin.write("\nResults:")
@@ -104,10 +108,7 @@ with open("ellipse%s_%s_%s_%s_%s.txt" %(str(sys.argv[1]), str(sys.argv[2]), str(
 ### save file ######################################################
 savetxt("EZ_MAS%s_%s_%s_%s_%s.txt" %(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5])), ezmas, delimiter=',')
 
-### to load ###
-#f = open('store.pckl', 'rb')
-#obj = pickle.load(f)
-#f.close()
+
 #######################################################################
 ### plot ###
 
@@ -115,7 +116,7 @@ plt.plot(report)
 plt.xlabel('Generations')
 plt.ylabel('Max Error')
 plt.title('Error Convergence SmoothTriangle %s' %(str(sys.argv[1])))
-plt.savefig('SmoothTriangleError%s_%s_%s_%s_%s.png' %(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5])), dpi=400, bbox_inches='tight')
+plt.savefig('PlaneError%s_%s_%s_%s_%s.png' %(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5])), dpi=400, bbox_inches='tight')
 #plt.show()
 
 #######################################################################
