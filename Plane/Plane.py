@@ -28,7 +28,7 @@ class Plane(object):
     self.er = er
     self.mr = mr
 
-  def mas(self, verbose=False, both_flag=False, CN_limit=pow(10,22)):
+  def mas(self, verbose=False, both_flag=False, CN_limit=pow(10,12)):
     
     n_proc = psutil.cpu_count(logical=False)
 
@@ -81,15 +81,17 @@ class Plane(object):
       print(self.Ez_image)
 
     CN = np.linalg.cond(self.Anl)
+    pool.close()
+    pool.join()
     if CN > CN_limit:
-      print(1)
+     # print(1)
       return 1.0 #if CN is too big, return a gib error(1) as a penalty to the population values
     # Calculate errors
     abs_diff = abs(np.subtract(self.Ez_true, self.Ez_MAS))
     error = abs_diff/max(abs(self.Ez_inc))
     if both_flag:
         return (np.mean(error), max(error), self.Ez_MAS, CN)
-    print(max(error))
+   # print(max(error))
     return max(error)
     
 

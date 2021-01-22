@@ -100,7 +100,7 @@ with open("Plane%s_%s_%s_%s_%s.txt" %(str(sys.argv[1]), str(sys.argv[2]), str(sy
 			  "and %s seconds" %str(time_elasped%60)[0:4])
 	fin.write("\n \n")
 	fin.write("mean(error) = %s " %mean + "max(error) = %s " %max_ +
-		      "CN = %s" %CN + " expected c_aux_critical value = %s" %critical_value)
+		      "CN = %s" %CN + " expected positive critical value = %s" %h)
 	fin.write("\nprinting the best r_aux per generation")
 	for person in report:
 		fin.write("\n"+"%s" %person)
