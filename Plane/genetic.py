@@ -23,8 +23,8 @@ generations = int(sys.argv[3])
 population = int(sys.argv[4])
 N = int(sys.argv[5])
 ###
-limits = np.array([[-5,0],[0,1]]) ### needs change on the -2 when h is even smaller.
-### b ---> negative number should converge to -1 (-2,0)
+limits = np.array([[-1.2*h,0],[0,1]]) ### needs change on the -2 when h is even smaller.
+### b ---> negative number should converge to -h (-2,0)
 ### d ---> should be small (0,1)
 
 y_obs = 0

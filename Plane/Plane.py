@@ -84,7 +84,7 @@ class Plane(object):
     pool.close()
     pool.join()
     if CN > CN_limit:
-     # print(1)
+      #print("CN limit reached ",CN)
       return 1.0 #if CN is too big, return a gib error(1) as a penalty to the population values
     # Calculate errors
     abs_diff = abs(np.subtract(self.Ez_true, self.Ez_MAS))
@@ -92,6 +92,10 @@ class Plane(object):
     if both_flag:
         return (np.mean(error), max(error), self.Ez_MAS, CN)
    # print(max(error))
+   # if (max(error) > pow(10,-10)):
+    #  print(1.0)
+     # return 1.0
+    print(max(error))
     return max(error)
     
 
