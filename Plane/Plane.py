@@ -83,9 +83,9 @@ class Plane(object):
     CN = np.linalg.cond(self.Anl)
     pool.close()
     pool.join()
-    if CN > CN_limit:
+    #if CN > CN_limit:
       #print("CN limit reached ",CN)
-      return 1.0 #if CN is too big, return a gib error(1) as a penalty to the population values
+     # return 1.0 #if CN is too big, return a gib error(1) as a penalty to the population values
     # Calculate errors
     abs_diff = abs(np.subtract(self.Ez_true, self.Ez_MAS))
     error = abs_diff/max(abs(self.Ez_inc))
@@ -95,8 +95,8 @@ class Plane(object):
    # if (max(error) > pow(10,-10)):
     #  print(1.0)
      # return 1.0
-    print(max(error))
-    return max(error)
+    #print(max(error))
+    return max(error),CN
     
 
   def Bn_worker(self, N_index):
