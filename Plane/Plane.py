@@ -96,8 +96,7 @@ class Plane(object):
     #  print(1.0)
      # return 1.0
     #print(max(error))
-    return max(error),CN
-    
+    return max(error)
 
   def Bn_worker(self, N_index):
     return -self.I*special.hankel1(0, self.k*math.sqrt(math.pow(self.decim_indices[N_index], 2) + self.h2))

@@ -12,7 +12,7 @@ import sys
 pi = math.pi
 ###
 h_array = [0.25, 0.5, 0.75, 1, 1.5, 2.0, 3.0]
-h = h_array[int(sys.argv[1])]
+h = float(h_array[int(sys.argv[1])])
 ###
 k_array = [pi/20, pi/10, pi/5, pi/4, 1, pi/2, pi]
 k = k_array[int(sys.argv[2])]
