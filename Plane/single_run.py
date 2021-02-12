@@ -7,8 +7,8 @@ table = PrettyTable()
 table.field_names = ["h","b","d","max_error","CN"]
 #parameters
 h = [0.25, 0.5, 0.75, 1, 1.5, 2, 3]
-h2 = [1]
-b = np.linspace(-2*h2[0],0.2,24)
+h2 = [2]
+b = np.linspace(-2*h2[0],0,24)
 d = np.linspace(0.05,1,19) 
 y_obs = 0 
 
